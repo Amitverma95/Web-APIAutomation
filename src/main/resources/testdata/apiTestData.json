@@ -1,0 +1,37 @@
+{
+  "bookings": [
+    { "case": "Standard booking with breakfast",
+      "booking": { "firstname": "Jim", "lastname": "Brown", "totalprice": 111, "depositpaid": true,
+                   "bookingdates": { "checkin": "2026-11-01", "checkout": "2026-11-05" }, "additionalneeds": "Breakfast" } },
+    { "case": "Booking without deposit",
+      "booking": { "firstname": "Sally", "lastname": "Smith", "totalprice": 250, "depositpaid": false,
+                   "bookingdates": { "checkin": "2026-12-10", "checkout": "2026-12-12" }, "additionalneeds": "Late checkout" } },
+    { "case": "Booking without optional additionalneeds",
+      "booking": { "firstname": "Ravi", "lastname": "Kumar", "totalprice": 999, "depositpaid": true,
+                   "bookingdates": { "checkin": "2027-01-15", "checkout": "2027-01-30" } } },
+    { "case": "Names with special characters",
+      "booking": { "firstname": "José", "lastname": "O'Brien", "totalprice": 1, "depositpaid": true,
+                   "bookingdates": { "checkin": "2027-02-01", "checkout": "2027-02-02" }, "additionalneeds": "Wi-Fi & parking" } }
+  ],
+  "updateBooking": { "firstname": "James", "lastname": "Brown", "totalprice": 222, "depositpaid": false,
+                     "bookingdates": { "checkin": "2026-11-02", "checkout": "2026-11-08" }, "additionalneeds": "Dinner" },
+  "partialUpdate": { "firstname": "Patched", "totalprice": 333 },
+
+  "invalidCredentials": [
+    { "case": "Wrong password", "username": "admin", "password": "wrong_password" },
+    { "case": "Unknown user", "username": "unknown_user", "password": "password123" },
+    { "case": "Empty username and password", "username": "", "password": "" },
+    { "case": "Missing password field", "username": "admin", "password": null }
+  ],
+  "invalidBookingIds": ["99999999", "0", "-1", "abc"],
+  "missingMandatoryFields": [
+    { "case": "Missing firstname", "payload": { "lastname": "Brown", "totalprice": 111, "depositpaid": true,
+        "bookingdates": { "checkin": "2026-11-01", "checkout": "2026-11-05" } } },
+    { "case": "Missing totalprice", "payload": { "firstname": "Jim", "lastname": "Brown", "depositpaid": true,
+        "bookingdates": { "checkin": "2026-11-01", "checkout": "2026-11-05" } } },
+    { "case": "Missing bookingdates", "payload": { "firstname": "Jim", "lastname": "Brown", "totalprice": 111, "depositpaid": true } },
+    { "case": "Missing checkout date", "payload": { "firstname": "Jim", "lastname": "Brown", "totalprice": 111, "depositpaid": true,
+        "bookingdates": { "checkin": "2026-11-01" } } },
+    { "case": "Empty body", "payload": {} }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "customer": {
+    "valid": { "firstName": "John", "lastName": "Doe", "postalCode": "110001" }
+  },
+  "products": {
+    "single": ["Sauce Labs Backpack"],
+    "multiple": ["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Onesie"]
+  },
+  "purchaseScenarios": [
+    { "scenario": "Single product purchase", "products": ["Sauce Labs Backpack"] },
+    { "scenario": "Multiple product purchase", "products": ["Sauce Labs Fleece Jacket", "Sauce Labs Bike Light", "Test.allTheThings() T-Shirt (Red)"] }
+  ],
+  "checkout": {
+    "taxRate": "0.08",
+    "paymentInfo": "SauceCard #31337",
+    "shippingInfo": "Free Pony Express Delivery!",
+    "confirmationHeader": "Thank you for your order!",
+    "confirmationText": "Your order has been dispatched, and will arrive just as fast as the pony can get there!"
+  },
+  "invalidLogin": [
+    { "case": "Locked out user", "username": "locked_out_user", "password": "secret_sauce", "error": "Epic sadface: Sorry, this user has been locked out." },
+    { "case": "Wrong password", "username": "standard_user", "password": "wrong_password", "error": "Epic sadface: Username and password do not match any user in this service" },
+    { "case": "Unknown user", "username": "unknown_user", "password": "secret_sauce", "error": "Epic sadface: Username and password do not match any user in this service" },
+    { "case": "Empty username", "username": "", "password": "secret_sauce", "error": "Epic sadface: Username is required" },
+    { "case": "Empty password", "username": "standard_user", "password": "", "error": "Epic sadface: Password is required" }
+  ],
+  "invalidCheckout": [
+    { "case": "Missing first name", "firstName": "", "lastName": "Doe", "postalCode": "110001", "error": "Error: First Name is required" },
+    { "case": "Missing last name", "firstName": "John", "lastName": "", "postalCode": "110001", "error": "Error: Last Name is required" },
+    { "case": "Missing postal code", "firstName": "John", "lastName": "Doe", "postalCode": "", "error": "Error: Postal Code is required" },
+    { "case": "All fields empty", "firstName": "", "lastName": "", "postalCode": "", "error": "Error: First Name is required" }
+  ]
+}
