@@ -48,7 +48,9 @@ public class ApiTestDataReader {
 
     public static List<JsonNode> getRows(String key) {
         List<JsonNode> rows = new ArrayList<>();
-        getNode(key).forEach(rows::add);
+        for (JsonNode row : getNode(key)) {
+            rows.add(row);
+        }
         return rows;
     }
 

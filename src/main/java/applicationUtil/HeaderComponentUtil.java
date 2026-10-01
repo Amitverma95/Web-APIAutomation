@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import pageObject.HeaderComponent_OR;
 import pageObject.LoginPage_OR;
@@ -36,7 +37,8 @@ public class HeaderComponentUtil {
      */
     public boolean isPageTitle(String strExpectedTitle) {
         try {
-            return cfObj.getWait().until(d -> strExpectedTitle.equals(headerOr.getPageTitle().getText().trim()));
+            // exact match, so a title like "Products Page" does not pass for "Products"
+            return cfObj.getWait().until(ExpectedConditions.textToBe(HeaderComponent_OR.PAGE_TITLE, strExpectedTitle));
         } catch (Exception e) {
             headerMsgList.add("Page title expected '" + strExpectedTitle + "' but found '" + getPageTitle() + "'");
             return false;

@@ -6,7 +6,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
-import applicationUtil.InventoryPageUtil;
 import applicationUtil.LoginPageUtil;
 import listener.TestListener;
 import util.Common_Function;
@@ -46,13 +45,12 @@ public class BaseTest {
         return driver.get();
     }
 
-    /** Common precondition - login with the user from config and land on the inventory page. */
-    protected InventoryPageUtil loginWithValidUser() {
+    /** Common precondition - login with the user from config. */
+    protected void loginWithValidUser() {
         LoginPageUtil loginPageUtil = new LoginPageUtil(getDriver());
         boolean result = loginPageUtil.verifyLogin(configReaderObj.getUsername(), configReaderObj.getPassword(),
                 configReaderObj.getInventoryUrl());
         Assert.assertTrue(result, "Precondition failed - login: " + loginPageUtil.loginPageMsgList);
         Log.info("Precondition: logged in as '" + configReaderObj.getUsername() + "'");
-        return new InventoryPageUtil(getDriver());
     }
 }

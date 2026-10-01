@@ -9,6 +9,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import pageObject.InventoryPage_OR;
 import pojo.Product;
@@ -227,11 +228,8 @@ public class InventoryPageUtil {
                 return false;
             }
             cfObj.click(getProductCard(productName).findElement(InventoryPage_OR.PRODUCT_BUTTON));
-            boolean changed = cfObj.getWait().until(d -> getProductButtonText(productName).equals(expectedAfter));
-            if (!changed) {
-                inventoryPageMsgList.add("Button for '" + productName + "' did not change to '" + expectedAfter + "'");
-            }
-            return changed;
+            // React replaces the button after the click, so wait on its locator instead of the old element
+            return cfObj.getWait().until(ExpectedConditions.textToBe(InventoryPage_OR.productButton(productName), expectedAfter));
         } catch (Exception e) {
             inventoryPageMsgList.add("clickProductButton_Exception for '" + productName + "': " + e.getMessage());
             return false;

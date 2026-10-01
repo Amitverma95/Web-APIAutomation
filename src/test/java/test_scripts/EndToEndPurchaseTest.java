@@ -19,13 +19,15 @@ import util.TestDescriptionContant;
 
 public class EndToEndPurchaseTest extends BaseTest {
 
+
     @Test(groups = { "smoke", "regression", "e2e" }, dataProvider = "purchaseData", dataProviderClass = TestDataProvider.class,
             description = TestDescriptionContant.VERIFY_END_TO_END_PURCHASE)
     public void verifyEndToEndPurchase(String scenario, List<String> productNames) {
         Log.info("Scenario: " + scenario + " - " + productNames);
 
         // 1-3. Launch application (BaseTest), login and verify successful login
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         HeaderComponentUtil headerUtil = new HeaderComponentUtil(getDriver());
 
         // 4-5. Select each product, verify its details and add it to the cart

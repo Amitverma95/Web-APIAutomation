@@ -14,16 +14,19 @@ import util.TestDescriptionContant;
 
 public class InventoryTest extends BaseTest {
 
+
     @Test(groups = { "regression", "inventory" }, description = TestDescriptionContant.VERIFY_INVENTORY_PRODUCTS)
     public void verifyInventoryListsProducts() {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         Assert.assertTrue(inventoryPageUtil.verifyAllProductsHaveNameAndPrice(), inventoryPageUtil.inventoryPageMsgList.toString());
     }
 
     @Test(groups = { "smoke", "regression", "inventory" }, description = TestDescriptionContant.VERIFY_PRODUCT_DETAILS)
     public void verifySelectProductOpensDetails() {
         String productName = TestDataReader.getProductNames("single").get(0);
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         Product listedProduct = inventoryPageUtil.getProduct(productName);
 
         inventoryPageUtil.openProductDetails(productName);
@@ -36,7 +39,8 @@ public class InventoryTest extends BaseTest {
     @Test(groups = { "regression", "inventory", "cart" }, description = TestDescriptionContant.VERIFY_ADD_REMOVE_CART_BADGE)
     public void verifyAddAndRemoveProductUpdatesCartBadge() {
         List<String> products = TestDataReader.getProductNames("multiple");
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         HeaderComponentUtil headerUtil = new HeaderComponentUtil(getDriver());
         Assert.assertEquals(headerUtil.getCartBadgeCount(), 0, "Cart badge should not be shown before adding products");
 
@@ -51,14 +55,16 @@ public class InventoryTest extends BaseTest {
 
     @Test(groups = { "regression", "inventory" }, description = TestDescriptionContant.VERIFY_SORT_BY_PRICE)
     public void verifySortByPriceLowToHigh() {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         inventoryPageUtil.sortBy("Price (low to high)");
         Assert.assertTrue(inventoryPageUtil.isSortedByPriceLowToHigh(), inventoryPageUtil.inventoryPageMsgList.toString());
     }
 
     @Test(groups = { "regression", "inventory" }, description = TestDescriptionContant.VERIFY_SORT_BY_NAME)
     public void verifySortByNameZToA() {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         inventoryPageUtil.sortBy("Name (Z to A)");
         Assert.assertTrue(inventoryPageUtil.isSortedByNameZToA(), inventoryPageUtil.inventoryPageMsgList.toString());
     }

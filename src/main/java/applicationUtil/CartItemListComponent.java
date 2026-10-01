@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import pageObject.CartPage_OR;
 import pojo.Product;
@@ -15,21 +16,23 @@ import util.Common_Function;
  */
 public class CartItemListComponent {
 
-    /** Reads the rows, retrying if React re-renders them while they are being read. */
+    /** Waits for rows to be visible then reads them. */
     public static List<Product> readItems(Common_Function cfObj, List<WebElement> rows) {
-        return cfObj.getWait().until(d -> read(rows));
+        cfObj.waitForAllVisible(rows);
+        return read(rows);
     }
 
     /**
-     * Waits until the list shows the expected number of rows before reading it - the page url changes
-     * before React has rendered the rows. On timeout the actual rows are returned so the caller reports the mismatch.
+     * Waits until the expected number of rows is shown, then reads them. On timeout the actual rows are
+     * read anyway, so verifyItems() reports the mismatch.
      */
     public static List<Product> readItems(Common_Function cfObj, List<WebElement> rows, int expectedCount) {
         try {
-            return cfObj.getWait().until(d -> rows.size() == expectedCount ? read(rows) : null);
+            cfObj.getWait().until(ExpectedConditions.numberOfElementsToBe(CartPage_OR.CART_ROW, expectedCount));
         } catch (TimeoutException e) {
-            return readItems(cfObj, rows);
+            // count mismatch is reported by verifyItems()
         }
+        return read(rows);
     }
 
     private static List<Product> read(List<WebElement> rows) {
