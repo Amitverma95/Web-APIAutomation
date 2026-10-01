@@ -15,8 +15,17 @@ public class InventoryPage_OR {
 
     /** Product card located by its visible name, e.g. "Sauce Labs Backpack". */
     public static By productCard(String productName) {
-        return By.xpath("//div[@data-test='inventory-item'][.//div[@data-test='inventory-item-name' and normalize-space()="
-                + xpathLiteral(productName) + "]]");
+        return By.xpath(productCardXpath(productName));
+    }
+
+    /** "Add to cart" / "Remove" button of a product card. React replaces it on click, so waits look it up again. */
+    public static By productButton(String productName) {
+        return By.xpath(productCardXpath(productName) + "//button");
+    }
+
+    private static String productCardXpath(String productName) {
+        return "//div[@data-test='inventory-item'][.//div[@data-test='inventory-item-name' and normalize-space()="
+                + xpathLiteral(productName) + "]]";
     }
 
     private static String xpathLiteral(String value) {

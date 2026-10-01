@@ -14,9 +14,11 @@ import util.TestDescriptionContant;
 
 public class CartTest extends BaseTest {
 
+
     @Test(groups = { "regression", "cart" }, description = TestDescriptionContant.VERIFY_CART_DETAILS)
     public void verifyCartDetails() {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         List<Product> expectedProducts = inventoryPageUtil.getProducts(TestDataReader.getProductNames("multiple"));
         Assert.assertTrue(inventoryPageUtil.addProductsAndOpenCart(expectedProducts), inventoryPageUtil.inventoryPageMsgList.toString());
 
@@ -28,7 +30,8 @@ public class CartTest extends BaseTest {
 
     @Test(groups = { "regression", "cart" }, description = TestDescriptionContant.VERIFY_REMOVE_FROM_CART)
     public void verifyRemoveProductFromCart() {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         List<Product> products = inventoryPageUtil.getProducts(TestDataReader.getProductNames("multiple"));
         Assert.assertTrue(inventoryPageUtil.addProductsAndOpenCart(products), inventoryPageUtil.inventoryPageMsgList.toString());
 

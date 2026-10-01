@@ -12,6 +12,9 @@ public class HeaderComponent_OR {
     // Badge is removed from the DOM when the cart is empty, so it is looked up with a By
     public static final By CART_BADGE = By.cssSelector("[data-test='shopping-cart-badge']");
 
+    // Title is re-rendered on every page change, so waits look it up with a By
+    public static final By PAGE_TITLE = By.cssSelector("[data-test='title']");
+
     @FindBy(css = "[data-test='title']")
     private WebElement pageTitle;
 

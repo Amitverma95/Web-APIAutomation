@@ -34,7 +34,8 @@ public class AuthApiUtil {
      */
     public static synchronized String getToken() {
         if (cachedToken == null) {
-            Response response = new AuthApiUtil().createToken(new AuthApiUtil().getValidCredentials());
+            AuthApiUtil auth = new AuthApiUtil();
+            Response response = auth.createToken(auth.getValidCredentials());
             String token = response.getStatusCode() == 200 ? JsonUtil.fromJson(response, AuthResponse.class).getToken() : null;
             if (token == null || token.isEmpty()) {
                 throw new IllegalStateException("Unable to create auth token, status " + response.getStatusCode()

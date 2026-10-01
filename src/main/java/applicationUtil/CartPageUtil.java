@@ -6,6 +6,7 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import pageObject.CartPage_OR;
 import pojo.Product;
@@ -50,28 +51,29 @@ public class CartPageUtil {
 
     public boolean removeProduct(String productName) {
         Log.info("Remove '" + productName + "' from cart page");
-        WebElement removeButton;
         try {
-            // wait for the row - cart rows render after the url changes
-            removeButton = cfObj.getWait().until(d -> {
-                for (WebElement row : cartPageOr.getCartItems()) {
-                    if (row.findElement(CartPage_OR.ITEM_NAME).getText().trim().equals(productName)) {
-                        return row.findElement(CartPage_OR.ITEM_REMOVE_BUTTON);
-                    }
+            // cart rows render after the url changes, so wait for them first
+            List<WebElement> rows = cfObj.getWait().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(CartPage_OR.CART_ROW));
+            WebElement removeButton = null;
+            for (WebElement row : rows) {
+                if (row.findElement(CartPage_OR.ITEM_NAME).getText().trim().equals(productName)) {
+                    removeButton = row.findElement(CartPage_OR.ITEM_REMOVE_BUTTON);
+                    break;
                 }
-                return null;
-            });
+            }
+            if (removeButton == null) {
+                cartPageMsgList.add("'" + productName + "' not found in cart");
+                return false;
+            }
+            int rowsBefore = rows.size();
+            cfObj.click(removeButton);
+            // make sure the row is really gone from the cart list
+            cfObj.getWait().until(ExpectedConditions.numberOfElementsToBe(CartPage_OR.CART_ROW, rowsBefore - 1));
+            return true;
         } catch (Exception e) {
-            cartPageMsgList.add("'" + productName + "' not found in cart");
+            cartPageMsgList.add("removeProduct_Exception: " + e.getMessage());
             return false;
         }
-        try {
-            cfObj.click(removeButton);
-            return cfObj.getWait().until(d -> getCartItems().stream().noneMatch(p -> p.getName().equals(productName)));
-        } catch (Exception e) {
-            cartPageMsgList.add("'" + productName + "' is still in the cart after remove: " + e.getMessage());
-        }
-        return false;
     }
 
     public boolean proceedToCheckout() {

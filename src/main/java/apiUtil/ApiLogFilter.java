@@ -1,9 +1,9 @@
 package apiUtil;
 
-import java.util.stream.Collectors;
-
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
+import io.restassured.http.Cookie;
+import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
@@ -20,13 +20,16 @@ public class ApiLogFilter implements Filter {
             FilterContext ctx) {
         StringBuilder req = new StringBuilder();
         req.append(request.getMethod()).append(' ').append(request.getURI()).append('\n');
-        req.append(request.getHeaders().asList().stream()
-                .map(h -> h.getName() + ": " + mask(h.getName(), h.getValue()))
-                .collect(Collectors.joining("\n")));
+        for (Header h : request.getHeaders().asList()) {
+            req.append(h.getName()).append(": ").append(mask(h.getName(), h.getValue())).append('\n');
+        }
         if (!request.getCookies().asList().isEmpty()) {
-            req.append("\nCookie: ").append(request.getCookies().asList().stream()
-                    .map(c -> c.getName() + "=" + maskValue(c.getValue()))
-                    .collect(Collectors.joining("; ")));
+            StringBuilder cookieStr = new StringBuilder();
+            for (Cookie c : request.getCookies().asList()) {
+                if (cookieStr.length() > 0) cookieStr.append("; ");
+                cookieStr.append(c.getName()).append("=").append(maskValue(c.getValue()));
+            }
+            req.append("Cookie: ").append(cookieStr).append('\n');
         }
         Object body = request.getBody();
         if (body != null) {

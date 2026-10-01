@@ -206,44 +206,36 @@ public class Common_Function {
     // Actions
     // ------------------------------------------------------------------
 
-    // Actions run inside the explicit wait, so a React re-render (stale element) is retried instead of failing
+    // If React re-renders the element (stale element), the action is tried once more instead of failing
 
     public void click(WebElement element) {
         try {
-            getWait().until(d -> {
-                WebElement clickable = ExpectedConditions.elementToBeClickable(element).apply(d);
-                if (clickable == null) {
-                    return false;
-                }
-                clickable.click();
-                return true;
-            });
-            log.debug("Clicked on element: {}", element);
-        } catch (Exception e) {
-            log.error("Failed to click element: {}", element, e);
-            throw e;
+            getWait().until(ExpectedConditions.elementToBeClickable(element)).click();
+        } catch (StaleElementReferenceException e) {
+            getWait().until(ExpectedConditions.elementToBeClickable(element)).click();
         }
+        log.debug("Clicked on element: {}", element);
     }
 
     public void type(WebElement element, String text) {
         try {
-            getWait().until(d -> {
-                if (!element.isDisplayed()) {
-                    return false;
-                }
-                element.clear();
-                element.sendKeys(text);
-                return true;
-            });
-            log.debug("Typed '{}' into element {}", text, element);
-        } catch (Exception e) {
-            log.error("Failed to type into element {}", element, e);
-            throw e;
+            WebElement el = waitForVisible(element);
+            el.clear();
+            el.sendKeys(text);
+        } catch (StaleElementReferenceException e) {
+            WebElement el = waitForVisible(element);
+            el.clear();
+            el.sendKeys(text);
         }
+        log.debug("Typed '{}' into element {}", text, element);
     }
 
     public String getText(WebElement element) {
-        return getWait().until(d -> element.isDisplayed() ? element.getText().trim() : null);
+        try {
+            return waitForVisible(element).getText().trim();
+        } catch (StaleElementReferenceException e) {
+            return waitForVisible(element).getText().trim();
+        }
     }
 
     public void selectByVisibleText(WebElement element, String text) {

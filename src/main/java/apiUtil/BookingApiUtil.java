@@ -1,7 +1,6 @@
 package apiUtil;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 import io.restassured.http.Method;
 import io.restassured.response.Response;
@@ -61,31 +60,40 @@ public class BookingApiUtil {
 
     public Response updateBooking(Object bookingId, Object payload, Auth auth) {
         Log.info("PUT " + APIEndPoint.BOOKING + "/" + bookingId + " using " + auth);
-        return sendWithAuth(Method.PUT, () -> withId(SpecBuilder.getRequestSpec(), bookingId).body(JsonUtil.toJson(payload)), auth);
+        return sendWithAuth(Method.PUT, bookingId, JsonUtil.toJson(payload), true, auth);
     }
 
     public Response partialUpdateBooking(Object bookingId, Object payload, Auth auth) {
         Log.info("PATCH " + APIEndPoint.BOOKING + "/" + bookingId + " using " + auth);
-        return sendWithAuth(Method.PATCH, () -> withId(SpecBuilder.getRequestSpec(), bookingId).body(JsonUtil.toJson(payload)), auth);
+        return sendWithAuth(Method.PATCH, bookingId, JsonUtil.toJson(payload), true, auth);
     }
 
     public Response deleteBooking(Object bookingId, Auth auth) {
         Log.info("DELETE " + APIEndPoint.BOOKING + "/" + bookingId + " using " + auth);
-        return sendWithAuth(Method.DELETE, () -> withId(SpecBuilder.getBaseRequestSpec(), bookingId), auth);
+        return sendWithAuth(Method.DELETE, bookingId, null, false, auth);
     }
 
     /**
      * Sends a request that needs auth. With the shared token, a 403 means the token expired:
      * a new token is created and the request is sent once more.
      */
-    private Response sendWithAuth(Method method, Supplier<RequestSpecification> requestBuilder, Auth auth) {
+    private Response sendWithAuth(Method method, Object bookingId, String body, boolean jsonSpec, Auth auth) {
         String tokenUsed = auth.isSharedToken() ? AuthApiUtil.getToken() : null;
-        Response response = ApiClient.send(method, auth.apply(requestBuilder.get()), APIEndPoint.BOOKING_BY_ID);
+        Response response = doSend(method, bookingId, body, jsonSpec, auth);
         if (response.getStatusCode() == 403 && auth.isSharedToken()) {
             AuthApiUtil.refreshToken(tokenUsed);
-            response = ApiClient.send(method, auth.apply(requestBuilder.get()), APIEndPoint.BOOKING_BY_ID);
+            response = doSend(method, bookingId, body, jsonSpec, auth);
         }
         return response;
+    }
+
+    private Response doSend(Method method, Object bookingId, String body, boolean jsonSpec, Auth auth) {
+        RequestSpecification spec = jsonSpec ? SpecBuilder.getRequestSpec() : SpecBuilder.getBaseRequestSpec();
+        spec = withId(spec, bookingId);
+        if (body != null) {
+            spec = spec.body(body);
+        }
+        return ApiClient.send(method, auth.apply(spec), APIEndPoint.BOOKING_BY_ID);
     }
 
     private RequestSpecification withId(RequestSpecification request, Object bookingId) {

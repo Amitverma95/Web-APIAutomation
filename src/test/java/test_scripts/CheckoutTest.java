@@ -17,10 +17,12 @@ import util.TestDescriptionContant;
 
 public class CheckoutTest extends BaseTest {
 
+
     @Test(groups = { "regression", "checkout", "negative" }, dataProvider = "invalidCheckoutData",
             dataProviderClass = TestDataProvider.class, description = TestDescriptionContant.VERIFY_CHECKOUT_MANDATORY_FIELDS)
     public void verifyCheckoutMandatoryFields(String testCase, CustomerDetails customer, String expectedError) {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         List<Product> products = inventoryPageUtil.getProducts(TestDataReader.getProductNames("single"));
         Assert.assertTrue(inventoryPageUtil.addProductsAndProceedToCheckout(products), inventoryPageUtil.inventoryPageMsgList.toString());
 
@@ -31,7 +33,8 @@ public class CheckoutTest extends BaseTest {
 
     @Test(groups = { "regression", "checkout" }, description = TestDescriptionContant.VERIFY_CHECKOUT_OVERVIEW)
     public void verifyCheckoutOverview() {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         List<Product> products = inventoryPageUtil.getProducts(TestDataReader.getProductNames("multiple"));
         Assert.assertTrue(inventoryPageUtil.addProductsAndProceedToCheckout(products), inventoryPageUtil.inventoryPageMsgList.toString());
 
@@ -47,7 +50,8 @@ public class CheckoutTest extends BaseTest {
 
     @Test(groups = { "regression", "checkout" }, description = TestDescriptionContant.VERIFY_CANCEL_CHECKOUT)
     public void verifyCancelCheckoutReturnsToCart() {
-        InventoryPageUtil inventoryPageUtil = loginWithValidUser();
+        loginWithValidUser();
+        InventoryPageUtil inventoryPageUtil = new InventoryPageUtil(getDriver());
         List<Product> products = inventoryPageUtil.getProducts(TestDataReader.getProductNames("single"));
         Assert.assertTrue(inventoryPageUtil.addProductsAndProceedToCheckout(products), inventoryPageUtil.inventoryPageMsgList.toString());
 
